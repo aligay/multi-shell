@@ -3,7 +3,7 @@ import { resolve } from 'path'
 import { writeFileSync } from 'fs'
 
 import MultiShell, { Task } from './index'
-const pkg = require('../package.json')
+import pkg from '../package.json'
 
 let options: Task = {
   baseDir: process.cwd(),
