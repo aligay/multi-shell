@@ -1,0 +1,36 @@
+{
+  "name": "multi-shell",
+  "version": "1.0.1",
+  "description": "A tool to run multiple shell in parallel.",
+  "main": "src/index.js",
+  "types": "src/index.d.ts",
+  "bin": {
+    "m-sh": "./bin/m-sh",
+    "multi-shell": "./bin/m-sh"
+  },
+  "scripts": {
+    "clean": "rimraf {src,test,script}/**/*.{js,map,d.ts}",
+    "build": "npm run clean && npm run lint && tsc",
+    "dev": "npm run clean && tsc -w",
+    "debug": "node --inspect-brk lib/index.js",
+    "lint": "tslint --project tsconfig.json --format stylish",
+    "prepublish": "npm run build"
+  },
+  "dependencies": {
+    "colors": "^1.1.2"
+  },
+  "devDependencies": {
+    "@types/node": "^8.0.53",
+    "rimraf": "^2.6.2",
+    "tslib": "^1.8.1",
+    "tslint": "^5.9.1",
+    "tslint-config-standard": "^7.0.0",
+    "typescript": "^2.6.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aligay/multi-shell.git"
+  },
+  "bugs": "https://github.com/aligay/multi-shell/issues",
+  "license": "MIT"
+}
