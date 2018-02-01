@@ -8,7 +8,7 @@ export interface Task {
 }
 
 class MultiShell {
-  private baseDir: string
+  private baseDir: string = ''
   private sh: string
   private shFlag: string
   private options: Task
