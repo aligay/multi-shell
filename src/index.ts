@@ -1,7 +1,8 @@
-import { green, red } from 'colors/safe'
 import { spawn, ChildProcess } from 'child_process'
 import { normalize } from 'path'
+import Console from 'omg-console'
 
+const console = new Console('multi-shell')
 export interface Task {
   baseDir?: string
   tasks?: string[]
@@ -36,12 +37,12 @@ class MultiShell {
     if (!this.options.tasks) return
 
     this.options.tasks.forEach(cmd => {
-      console.log(green(cmd))
+      console.info(cmd)
       if (this.baseDir) {
         try {
           process.chdir(this.baseDir)
         } catch (e) {
-          console.error(red(`no such file or directory: `, `\`${this.baseDir}\``))
+          console.error(`no such file or directory: \`${this.baseDir}\``)
         }
       }
 
@@ -51,7 +52,7 @@ class MultiShell {
         stdio: ['pipe', process.stdout, process.stderr]
       })
       .on('error', (err) => {
-        console.log(red(err))
+        console.log(err)
       })
       process.on('SIGINT', () => {
         this.close()
@@ -71,7 +72,7 @@ class MultiShell {
             process.exit(0)
           })
         } catch (e) {
-          // console.log(red(e.message))
+          // console.log(e.message)
         }
       }
     }

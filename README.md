@@ -1,6 +1,9 @@
 # multi-shell
 
 ---
+[![dependencies Status](https://david-dm.org/aligay/multi-shell/status.svg)](https://david-dm.org/aligay/multi-shell)
+[![devDependencies Status](https://david-dm.org/aligay/multi-shell/dev-status.svg)](https://david-dm.org/aligay/multi-shell?type=dev)
+
 A tool to run multiple shell in parallel.
 
 ## Install
