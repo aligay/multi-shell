@@ -1,7 +1,13 @@
 {
   "name": "multi-shell",
-  "version": "1.0.3",
+  "version": "1.1.0",
   "description": "A tool to run multiple shell in parallel.",
+  "bugs": "https://github.com/aligay/multi-shell/issues",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aligay/multi-shell.git"
+  },
+  "license": "MIT",
   "main": "src/index.js",
   "types": "src/index.d.ts",
   "bin": {
@@ -9,28 +15,22 @@
     "multi-shell": "./bin/m-sh"
   },
   "scripts": {
-    "clean": "rimraf {src,test,script}/**/*.{js,map,d.ts}",
     "build": "npm run clean && npm run lint && tsc",
-    "dev": "npm run clean && tsc -w",
+    "clean": "rimraf {src,test,script}/**/*.{js,map,d.ts}",
     "debug": "node --inspect-brk lib/index.js",
+    "dev": "npm run clean && tsc -w",
     "lint": "tslint --project tsconfig.json --format stylish",
     "prepublish": "npm run build"
   },
   "dependencies": {
-    "colors": "^1.1.2",
-    "tslib": "^1.9.0"
+    "omg-console": "^1.1.2",
+    "tslib": "1.9.3"
   },
   "devDependencies": {
-    "@types/node": "^9.4.0",
-    "rimraf": "^2.6.2",
-    "tslint": "^5.9.1",
-    "tslint-config-standard": "^7.0.0",
-    "typescript": "^2.7.1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/aligay/multi-shell.git"
-  },
-  "bugs": "https://github.com/aligay/multi-shell/issues",
-  "license": "MIT"
+    "@types/node": "11.9.5",
+    "rimraf": "2.6.3",
+    "tslint": "5.13.0",
+    "tslint-config-standard": "8.0.1",
+    "typescript": "3.3.3333"
+  }
 }

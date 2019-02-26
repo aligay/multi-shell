@@ -1,9 +1,10 @@
-import { red, green } from 'colors'
+import Console from 'omg-console'
 import { resolve } from 'path'
 import { writeFileSync } from 'fs'
 
 import MultiShell, { Task } from './index'
 import pkg from '../package.json'
+const console = new Console('multi-shell')
 
 let options: Task = {
   baseDir: process.cwd(),
@@ -27,7 +28,7 @@ const initConfig = (configFileName) => {
   tasks: []
 }
 `, 'utf-8')
-  console.log(green(`${optionsFile} has created`))
+  console.info(`${optionsFile} has created`)
 }
 
 const args = process.argv.slice(2)
@@ -77,7 +78,7 @@ if (configFile) {
   try {
     options = moduleRequire(resolve(process.cwd(), configFile))
   } catch (e) {
-    console.error(red(`can't find config at path \`${configFile}\``))
+    console.error(`can't find config at path \`${configFile}\``)
   }
 }
 
