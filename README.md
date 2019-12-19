@@ -32,12 +32,12 @@ new MutilShell({
 ## with global shell
 
 ```shell
-sudo npm install -g multi-shell
+yarn global add multi-shell
 
 m-sh "cd node_project/ && npm run dev" "cd your_path/ && node serve.js" --baseDir xxx
 
 # generate a config file
-m-sh --init
+m-sh init
 # use config file
 m-sh -c ./tasks.conf.js # or json
 ```

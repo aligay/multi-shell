@@ -2,6 +2,7 @@
   "extends": "tslint-config-standard",
   "rules": {
     "no-floating-promises": false,
-    "no-unused-variable": true
+    "no-unused-variable": true,
+    "only-arrow-functions": true
   }
 }

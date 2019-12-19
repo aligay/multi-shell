@@ -4,8 +4,8 @@ import Console from 'omg-console'
 
 const console = new Console('multi-shell')
 export interface Task {
-  baseDir?: string
-  tasks?: string[]
+  baseDir: string
+  tasks: string[]
 }
 
 class MultiShell {
@@ -37,7 +37,6 @@ class MultiShell {
     if (!this.options.tasks) return
 
     this.options.tasks.forEach(cmd => {
-      console.info(cmd)
       if (this.baseDir) {
         try {
           process.chdir(this.baseDir)
@@ -67,12 +66,12 @@ class MultiShell {
       if (!child.killed) {
         child.removeAllListeners('close')
         try {
-          process.kill(child.pid, 'SIGINT')
           child.on('close', () => {
             process.exit(0)
           })
+          process.kill(child.pid, 'SIGINT')
         } catch (e) {
-          // console.log(e.message)
+          // console.error(e)
         }
       }
     }

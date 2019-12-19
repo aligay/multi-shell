@@ -1,85 +1,64 @@
-import Console from 'omg-console'
-import { resolve } from 'path'
-import { writeFileSync } from 'fs'
+import * as path from 'path'
+import * as glob from 'glob'
+import * as yargs from 'yargs'
+import * as colors from 'colors'
+import MultiShell from './m-sh'
+import * as jsonuri from 'jsonuri'
+import * as updater from 'npm-updater'
+import * as pkg from '../package.json'
+const KEYWORDS = ['parallel', 'p', 'run']
 
-import MultiShell, { Task } from './index'
-import pkg from '../package.json'
-const console = new Console('multi-shell')
+// check version
+updater({
+  package: pkg,
+  abort: false,
+  interval: '1d',
+  registry: 'https://registry.npm.taobao.org',
+  updateMessage: colors.yellow(`\nplease run \`yarn global add ${pkg['name']}@latest\` to update\n`)
+})
 
-let options: Task = {
-  baseDir: process.cwd(),
-  tasks: []
+const parallel = (tasks: string[]) => {
+  new MultiShell({
+    baseDir: process.cwd(),
+    tasks
+  }).run()
 }
 
-const moduleRequire = (path) => {
-  const module = require(path)
-  return module.__esModule ? module.default : module
+/* tslint:disable no-unused-expression */
+yargs
+  .usage('$0 <cmd> [args]')
+  .command(['parallel', 'p'], 'm-sh \'npm run dev\' \'npm run tsc\'', () => {
+    parallel(yargs.argv._.slice(1))
+  })
+  .command('run', 'will find all {package.json}, add run same shell. e.g m-sh run \'yarn install\'', () => {
+    const shell = yargs.argv._.slice(1).join(' ').trim()
+    if (!shell) return
+
+    yargs.alias('i', 'ignore')
+    let ignore = (yargs.argv.ignore || '') as string | string[]
+    if (typeof ignore === 'string') ignore = [ignore]
+    ignore = ignore.filter(Boolean).map(p => process.cwd() + '/' + jsonuri.normalizePath(p.trim()) + '/package.json').concat(['**/node_modules/**'])
+    const pkgs = glob.sync(path.resolve(process.cwd(), '{**/*/,}package.json'), { ignore }).reverse()
+
+    console.log('======='.gray)
+    console.log(pkgs.map(pkg => `run \`${shell}\` at ${path.relative(process.cwd(), path.dirname(pkg)) || '.'}`).join('\n').gray)
+    console.log('======='.gray)
+    const tasks = pkgs.map(pkg => `cd ${path.dirname(pkg)} && sh -c '${shell}'`)
+    parallel(tasks)
+  })
+  .version()
+  .alias('v', 'version')
+  .help()
+  .alias('h', 'help')
+  .argv
+
+const subCmd = process.argv[2]
+
+if (subCmd && !KEYWORDS.includes(subCmd)) {
+  const tasks = yargs.argv._
+  parallel(tasks)
 }
 
-const help = () => {
-  console.log('-h, --help         output usage information')
-  console.log('-v, --version      show version')
-  process.exit()
+if (process.argv.length < 3) {
+  console.log((yargs as any).getUsageInstance().help())
 }
-const initConfig = (configFileName) => {
-  const optionsFile = resolve(configFileName || process.cwd(), 'tasks.conf.js')
-  writeFileSync(optionsFile, `module.exports = {
-  baseDir: '${process.cwd()}',
-  tasks: []
-}
-`, 'utf-8')
-  console.info(`${optionsFile} has created`)
-}
-
-const args = process.argv.slice(2)
-let configFile
-if (!args.length) {
-  help()
-}
-
-for (let i = 0; i < args.length; i++) {
-  if (args[i][0] === '-') {
-    switch (args[i]) {
-      case '-v':
-      case '--version':
-        console.log(pkg.version)
-        break
-
-      case '-c':
-      case '--config':
-        configFile = args[i + 1] || ''
-        if (configFile) ++i
-        break
-
-      case '--init':
-        const configFileName = args[i + 1] || ''
-        if (configFileName) ++i
-        initConfig(configFileName)
-        break
-
-      case '--baseDir':
-        const baseDir = args[i + 1] || ''
-        if (!baseDir) break
-        ++i
-        options.baseDir = baseDir
-        break
-
-      case '-h':
-      case '--help':
-        help()
-        break
-    }
-  } else {
-    (options.tasks as Array<string>).push(args[i])
-  }
-}
-
-if (configFile) {
-  try {
-    options = moduleRequire(resolve(process.cwd(), configFile))
-  } catch (e) {
-    console.error(`can't find config at path \`${configFile}\``)
-  }
-}
-
-new MultiShell(options).run()
